@@ -10,22 +10,15 @@ if(isset($_GET["sort"])){
   $sort = $_COOKIE["sort"];
 }
 
-if(isset($_GET["name"]) && isset($_GET["id"])){
-  $count = 1;
-  if(empty($_SESSION["id"])){
-    $_SESSION["id"] = [$_GET["id"] => $_GET["name"]];
-  }else if($_SESSION["id"] != $_GET["id"]){
-    $_SESSION["id"] = [$_GET["id"] => $_GET["name"]];
+if(isset($_GET["name"])){
+  if(empty($_SESSION["name"][$_GET["id"]])){
+    $_SESSION["name"][$_GET["id"]] = $_GET["name"];
+    $_SESSION["amount"][$_GET["id"]] = 1;
+  }else{
+    if($_SESSION["name"][$_GET["id"]] == $_GET["name"]){
+      $_SESSION["amount"][$_GET["id"]]++;
+    }
   }
-  // $element = ["id" => $_GET["id"],"name" => $_GET["name"]];
-  // if ($element["id"] == $_GET["id"]){
-  //   $count++;
-  // }
-  foreach ($_SESSION["id"] as $id => $name) {
-    echo "<p>" . $name . "</p>";
-  }
-  // print_r($_SESSION["id"]);
-  // var_dump($_SESSION);
 }
 ?>
 <!DOCTYPE html>
@@ -46,6 +39,14 @@ if(isset($_GET["name"]) && isset($_GET["id"])){
   </style>
 </head>
 <body>
+  <?php
+  echo "Cantidad de elementos en el carrito: " . count($_SESSION["name"]) . "<br>";
+  if(isset($_SESSION["name"])){
+    foreach($_SESSION["name"] as $productId => $productName){
+      echo $productName . ": " . $_SESSION["amount"][$productId] . "<br>";
+    }
+  }
+  ?>
   <table>
     <tr>
       <th><a href="index.php?sort=name">Nombre</a></th>

@@ -40,13 +40,16 @@ if(isset($_GET["name"])){
 </head>
 <body>
   <?php
-  echo "Cantidad de elementos en el carrito: " . count($_SESSION["name"]) . "<br>";
   if(isset($_SESSION["name"])){
+    echo "Cantidad de elementos en el carrito: " . count($_SESSION["name"]) . "<br>";
     foreach($_SESSION["name"] as $productId => $productName){
       echo $productName . ": " . $_SESSION["amount"][$productId] . "<br>";
     }
   }
   ?>
+  <p>
+    <a href="shoppingCart.php">Ver carrito de compra</a>
+  </p>
   <table>
     <tr>
       <th><a href="index.php?sort=name">Nombre</a></th>
@@ -75,16 +78,16 @@ if(isset($_GET["name"])){
       </tr>
     <?php
       }
+      $stmt->close();
     ?>
   </table>
-  <a href="index.php?logout=true">Logout</a>
+  <a href="logout.php">Logout</a>
 </body>
 </html>
 <?php
-$stmt->close();
 $link->close();
-if (isset($_GET["logout"])){
-  session_destoy();
-  header("Location: index.php");
-}
+// if (isset($_GET["logout"])){
+//   session_destoy();
+//   header("Location: index.php");
+// }
 ?>

@@ -31,10 +31,20 @@ if(isset($_GET["name"])){
     table {
       border: 1px solid black;
       text-align: center;
+      background-color: Seashell;
+    }
+    th {
+      background-color: LightBlue;
+    }
+    td {
+      background-color: LightGray;
     }
     tr,td,th {
       border: 1px solid black;
       padding: 5px;
+    }
+    a {
+      text-decoration: none;
     }
   </style>
 </head>
@@ -43,7 +53,9 @@ if(isset($_GET["name"])){
   if(isset($_SESSION["name"])){
     echo "Cantidad de elementos en el carrito: " . count($_SESSION["name"]) . "<br>";
     foreach($_SESSION["name"] as $productId => $productName){
-      echo $productName . ": " . $_SESSION["amount"][$productId] . "<br>";
+      if(isset($_SESSION["amount"][$productId])){
+        echo $productName . ": " . $_SESSION["amount"][$productId] . "<br>";
+      }
     }
   }
   ?>
@@ -86,8 +98,4 @@ if(isset($_GET["name"])){
 </html>
 <?php
 $link->close();
-// if (isset($_GET["logout"])){
-//   session_destoy();
-//   header("Location: index.php");
-// }
 ?>

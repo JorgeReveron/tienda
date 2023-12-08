@@ -2,6 +2,20 @@
 session_start();
 require "connection.php";
 
+if(isset($_GET["increment"])){
+  $_SESSION["amount"][$_GET["id"]]++;
+}
+if(isset($_GET["decrement"])){
+  $_SESSION["amount"][$_GET["id"]]--;
+  if($_SESSION["amount"][$_GET["id"]] == 0){
+    unset($_SESSION["name"][$_GET["id"]]);
+    unset($_SESSION["amount"][$_GET["id"]]);
+  }
+}
+
+if(isset($_GET["delete"])){
+  session_unset();
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,10 +28,20 @@ require "connection.php";
     table {
       border: 1px solid black;
       text-align: center;
+      background-color: LavenderBlush;
+    }
+    th {
+      background-color: LightBlue;
+    }
+    td {
+      background-color: MistyRose;
     }
     tr,td,th {
       border: 1px solid black;
       padding: 5px;
+    }
+    a {
+      text-decoration: none;
     }
   </style>
 </head>
@@ -28,6 +52,7 @@ require "connection.php";
       <th>Precio</th>
       <th>Cantidad</th>
       <th>Subtotal</th>
+      <th></th>
     </tr>
     <?php
     if(isset($_SESSION["name"])){
@@ -39,25 +64,36 @@ require "connection.php";
       $stmt->execute();
       $stmt->bind_result($price,$stock);
       if($stmt->fetch()){
-        $subtotal = $price*$_SESSION["amount"][$id];
-        $total += $subtotal;
-        $_SESSION[$id][$price] = $stock;
+        if(isset($_SESSION["amount"][$id])){
+          $subtotal = $price*$_SESSION["amount"][$id];
+          $total += $subtotal;
     ?>
     <tr>
       <td><?=$product ?></td>
       <td><?=$price ?>€</td>
       <td><?=$_SESSION["amount"][$id] ?></td>
       <td><?=$subtotal ?>€</td>
+      <td>
+        <a href="shoppingCart.php?id=<?=$id?>&decrement"><button>-</button></a>
+        <a href="shoppingCart.php?id=<?=$id?>&increment"><button>+</button></a>
+      </td>
     </tr>
     <?php
+        }
       }
     }
-    $stmt->close();
+    if(!empty($stmt)){
+      $stmt->close();
+    }
     ?>
     <tr>
-      <td colspan="4" style="text-align: end">Total: <?=$total ?>€</td>
+      <td colspan="5" style="text-align: end">Total: <?=$total ?>€</td>
     </tr>
   </table>
+  <p>
+    <a href="shoppingCart.php?delete"><button>Vaciar carrito</button></a>
+    <br>
+  </p>
   <p>
     <a href="index.php">Volver a lista de productos</a>
   </p>
